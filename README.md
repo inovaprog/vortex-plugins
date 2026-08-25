@@ -36,6 +36,11 @@ record the local execution in the project's `ai_context`, and move it to
 review. The older `/vortex-refinar` intent remains available for refinement-only
 work.
 
+Delivery starts automatically only for a task in `aberto`. A task in
+`progresso` requires an explicit request to resume it; tasks already in
+`review`, `fechado`, `arquivado`, or `duvida` are never reopened, edited, or
+sent to a second PR without an explicit user decision.
+
 Automatic pre-refinement is optional context. It never blocks execution,
 changes status, or creates a question; questions arise only from the real
 refinement step when implementation cannot safely proceed.
