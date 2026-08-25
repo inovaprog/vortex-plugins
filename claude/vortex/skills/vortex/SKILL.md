@@ -25,6 +25,14 @@ the user to choose a separate refinement command. Announce each stage briefly:
    `vortex task context ABC-1234 --json`, including attachments, acceptance
    criteria, existing plan, and relevant repository files. Pre-refinement is
    context only and never blocks this step.
+   Before any mutation, check eligibility: start delivery automatically only
+   from `aberto`. A task in `progresso` may be resumed only when the user
+   explicitly asked to resume it and inspection shows delivery is incomplete.
+   For `review`, `fechado`, `arquivado`, `duvida`, or any other status, do not
+   edit files, change status, reopen the task, or create another PR. Report
+   its current state and ask the user to explicitly choose a new action. A
+   `review` task is presumed delivered even if the current checkout lacks its
+   branch.
 2. Refine before coding with the strongest capability available: write a short
    plan, affected areas/files, acceptance criteria, risks, and focused checks.
    Persist it with MCP `set_task_plan` when available.

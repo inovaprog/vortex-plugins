@@ -42,6 +42,14 @@ user knows whether work is progressing or waiting on them.
    task, attachments available in its context, acceptance criteria, existing
    plan, and repository files before proposing changes. Pre-refinement is
    optional context only: never wait for it, requeue it, or use it as a gate.
+   **Check eligibility before anything else:** start delivery automatically
+   only from `aberto`. A task in `progresso` may be resumed only when the user
+   explicitly asked to resume it and inspection shows delivery is incomplete.
+   For `review`, `fechado`, `arquivado`, `duvida`, or any other status, do not
+   edit files, change status, reopen the task, or create another PR. Report
+   its current state and ask the user to explicitly choose a new action. A
+   `review` task is presumed delivered even if the current checkout lacks its
+   branch.
 2. **Refine with quality.** Use the strongest model/capability available to
    reason about the request. Produce a concise implementation plan, affected
    areas/files, acceptance criteria, risks, and focused checks. Persist the
