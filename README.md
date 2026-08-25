@@ -32,8 +32,9 @@ equivalent explicit command is:
 Both start one visible workflow: inspect the task and repository, refine with
 the best available reasoning capability, ask a question only when an essential
 decision is missing, mark the task in progress, implement, verify, open a PR,
-and move it to review. The older `/vortex-refinar` intent remains available for
-refinement-only work.
+record the local execution in the project's `ai_context`, and move it to
+review. The older `/vortex-refinar` intent remains available for refinement-only
+work.
 
 Automatic pre-refinement is optional context. It never blocks execution,
 changes status, or creates a question; questions arise only from the real

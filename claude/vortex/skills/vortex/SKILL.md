@@ -33,9 +33,21 @@ the user to choose a separate refinement command. Announce each stage briefly:
    the wait, and stop. Never create a doubt from pre-refinement or task size.
 4. Before editing, set `progresso` with `update_task_status` (or `vortex task
    update`). Then implement the approved plan economically and atomically.
-5. Run proportional verification. If blocked, report it and keep `progresso`.
-   If successful, create a branch, commit, push, and open a PR. Save the PR and
-   result with MCP `update_task` where available, then move the task to
+5. Run proportional verification. If blocked, record one execution with
+   `vortex task report-execution ABC-1234 --status error --summary "What was
+   attempted." --error "Blocking failure"` and keep `progresso`. If successful,
+   create a branch, commit, push, and open a PR, then record exactly one local
+   execution before moving the task:
+
+   ```sh
+   vortex task report-execution ABC-1234 --status success \
+     --pr-url "https://github.com/owner/repo/pull/123" \
+     --summary "What changed and which checks passed." --model claude
+   ```
+
+   This saves a durable execution entry and updates the project's `ai_context`
+   for future task refinement. It does not itself change the task status. Save
+   the PR/result with MCP `update_task` where available, then move the task to
    `review`; do not close it merely because a PR exists.
 
 `/vortex-refinar` remains a compatible refine-only intent: perform steps 1–3
