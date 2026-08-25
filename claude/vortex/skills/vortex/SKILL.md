@@ -1,17 +1,43 @@
 ---
 name: vortex
-description: Use Vortex tasks and project context from the authenticated Vortex CLI.
+description: Use Vortex tasks and project context from the authenticated Vortex CLI. “Executar com Vortex” and /vortex-executar trigger the unified delivery workflow.
 ---
 
 Use `vortex doctor --json` before operating Vortex.
 
 If the CLI is missing, ask approval before running
 `npm install --global @inovaprog/vrtex@latest`. If authentication is missing,
-run `vortex login`; this opens the secure browser login and never
-requires the user to provide a password or token in chat. If the repository is
-not linked, run `vortex init --skip-tests` and let the user select the project.
+run `vortex login`; this opens the secure browser login and never requires the
+user to provide a password or token in chat. If the repository is not linked,
+run `vortex init --skip-tests` and let the user select the project.
 
 Use the Vortex MCP tools once ready. For transparent terminal workflows, use
 `vortex task list`, `vortex task context ABC-1234 --json`, and `vortex task
 create`. State the project and task ID before a mutation; never change task
 status without the user's request.
+
+## Unified delivery workflow
+
+Treat “executar com Vortex” and `/vortex-executar` as one workflow. Do not ask
+the user to choose a separate refinement command. Announce each stage briefly:
+
+1. Confirm the linked project and inspect the task with `get_task_context` or
+   `vortex task context ABC-1234 --json`, including attachments, acceptance
+   criteria, existing plan, and relevant repository files. Pre-refinement is
+   context only and never blocks this step.
+2. Refine before coding with the strongest capability available: write a short
+   plan, affected areas/files, acceptance criteria, risks, and focused checks.
+   Persist it with MCP `set_task_plan` when available.
+3. Only if a missing decision makes a safe plan impossible, use
+   `set_refinement_question` for one objective question, set `duvida`, explain
+   the wait, and stop. Never create a doubt from pre-refinement or task size.
+4. Before editing, set `progresso` with `update_task_status` (or `vortex task
+   update`). Then implement the approved plan economically and atomically.
+5. Run proportional verification. If blocked, report it and keep `progresso`.
+   If successful, create a branch, commit, push, and open a PR. Save the PR and
+   result with MCP `update_task` where available, then move the task to
+   `review`; do not close it merely because a PR exists.
+
+`/vortex-refinar` remains a compatible refine-only intent: perform steps 1–3
+and wait before coding. `/vortex-executar` starts the full workflow. Use only
+the authenticated CLI and binding; never use `.mcp.json` with `X-Project-Key`.
