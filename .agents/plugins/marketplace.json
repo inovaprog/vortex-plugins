@@ -1,0 +1,20 @@
+{
+  "name": "vortex-plugins",
+  "interface": {
+    "displayName": "Vortex plugins"
+  },
+  "plugins": [
+    {
+      "name": "vortex",
+      "source": {
+        "source": "local",
+        "path": "./plugins/vortex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

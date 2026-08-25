@@ -1,0 +1,19 @@
+{
+  "name": "vortex",
+  "version": "0.1.0",
+  "description": "Create and manage Vortex tasks from Codex using the authenticated local CLI.",
+  "author": {
+    "name": "Inovaprog"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Vortex",
+    "shortDescription": "Use Vortex tasks from Codex.",
+    "longDescription": "Guides secure Vortex CLI setup and task workflows without project API keys.",
+    "developerName": "Inovaprog",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Help me work with the Vortex project linked to this repository."
+  },
+  "mcpServers": "./.mcp.json"
+}

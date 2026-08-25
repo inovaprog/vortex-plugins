@@ -1,0 +1,6 @@
+{
+  "name": "vortex",
+  "description": "Use Vortex tasks through the authenticated local CLI without project API keys.",
+  "version": "0.1.0",
+  "author": { "name": "Inovaprog" }
+}

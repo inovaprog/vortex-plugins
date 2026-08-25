@@ -1,0 +1,12 @@
+{
+  "name": "vortex-plugins",
+  "owner": { "name": "Inovaprog" },
+  "metadata": { "description": "Official Vortex plugins for AI coding clients" },
+  "plugins": [
+    {
+      "name": "vortex",
+      "source": "./claude/vortex",
+      "description": "Authenticated Vortex task workflows and MCP bridge"
+    }
+  ]
+}
