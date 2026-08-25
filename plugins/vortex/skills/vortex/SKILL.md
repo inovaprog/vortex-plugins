@@ -61,11 +61,23 @@ user knows whether work is progressing or waiting on them.
    repository. Use the configured execution-capable model/agent for code
    changes; reserve the high-quality reasoning pass for planning and review.
    Keep the change atomic and avoid unrelated refactors.
-6. **Verify and deliver.** Run proportional, focused checks. Report failures
-   honestly; leave the task `progresso` if they block delivery. On success,
-   create a branch, commit, push, and open a PR. Store the PR URL and a concise
-   result with the MCP `update_task` tool when available, then set status to
-   `review`. Do not close the task merely because a PR was opened.
+6. **Verify, record, and deliver.** Run proportional, focused checks. Report
+   failures honestly; leave the task `progresso` if they block delivery. On
+   success, create a branch, commit, push, and open a PR. Then record exactly
+   one local execution before changing the final status:
+
+   ```sh
+   vortex task report-execution ABC-1234 --status success \
+     --pr-url "https://github.com/owner/repo/pull/123" \
+     --summary "What changed and which checks passed." --model codex
+   ```
+
+   On failure, use `--status error --summary "What was attempted." --error
+   "Blocking failure"` and keep `progresso`. This command creates execution
+   telemetry and updates the project's `ai_context` for future tasks; it does
+   not replace a task result or change task status. After a successful record,
+   store the PR URL/result with MCP `update_task` when available, then set
+   status to `review`. Do not close the task merely because a PR was opened.
 
 For a request that only says “refinar”, perform steps 1–3 and wait for the
 user before implementation. For a request that only asks to inspect, list, or
