@@ -20,6 +20,32 @@ codex plugin add vortex@vortex-plugins
 The plugin starts `vortex mcp serve` locally; it uses the session created by
 `vortex login` and the repository binding in `.vortex/config.json`.
 
+## opencode
+
+opencode uses plain skill files instead of a plugin marketplace. Install the
+skill globally and register the `vortex` MCP server; see
+[docs/opencode.md](docs/opencode.md) for the full setup:
+
+```sh
+mkdir -p ~/.config/opencode/skills
+cp -r plugins/vortex/skills/vortex ~/.config/opencode/skills/vortex
+```
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "vortex": {
+      "type": "local",
+      "command": ["vortex", "mcp", "serve"]
+    }
+  }
+}
+```
+
+opencode loads skills and config once at startup: quit and restart after
+installing.
+
 ## Execute a task
 
 Ask the agent to **“executar com Vortex ABC-1234”**. In Claude Code, the
