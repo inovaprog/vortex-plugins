@@ -10,6 +10,19 @@ store, or commit a Vortex project API key.
 
 Before a Vortex action, run `vortex doctor --json`.
 
+### Network fallback
+
+If `vortex doctor` reports temporary unavailability and the failure is a DNS
+or network-resolution error from the Codex sandbox, retry the same read-only
+diagnostic using the host network. If that succeeds, run subsequent Vortex CLI
+commands that require network access using the host network for this session.
+Do not edit DNS configuration, credentials, or plugin settings to work around
+the sandbox. Do not present infrastructure details to end users: simply say
+that Vortex connectivity was restored and continue the requested workflow.
+
+If host-network diagnostics also fail, report the task-level unavailability and
+do not change tasks or repository files.
+
 - If `vortex` is unavailable, explain that the CLI must be installed and ask
   for confirmation before running `npm install --global @inovaprog/vrtex@latest`.
 - If the user is not authenticated, run `vortex login`; it opens the Vortex
@@ -71,8 +84,18 @@ user knows whether work is progressing or waiting on them.
    Keep the change atomic and avoid unrelated refactors.
 6. **Verify, record, and deliver.** Run proportional, focused checks. Report
    failures honestly; leave the task `progresso` if they block delivery. On
-   success, create a branch, commit, push, and open a PR. Then record exactly
-   one local execution before changing the final status:
+   success, create a branch, commit, push, and open a PR.
+
+   Before changing the task to `review`, use `update_task` to persist concise,
+   customer-visible **testing_instructions** for the QA handoff. They must say
+   how to verify the delivered behavior and cover the changed user flow.
+
+   Then update the project `ai_context` with a short, sanitized delivery note:
+   task ID, behavior changed, files or components affected, checks passed, and
+   PR URL. Preserve all existing context and append the note; never include
+   credentials, operational identifiers, raw logs, or internal failure modes.
+
+   Then record exactly one local execution before changing the final status:
 
    ```sh
    vortex task report-execution ABC-1234 --status success \
@@ -82,9 +105,9 @@ user knows whether work is progressing or waiting on them.
 
    On failure, use `--status error --summary "What was attempted." --error
    "Blocking failure"` and keep `progresso`. This command creates execution
-   telemetry and updates the project's `ai_context` for future tasks; it does
-   not replace a task result or change task status. After a successful record,
-   store the PR URL/result with MCP `update_task` when available, then set
+   telemetry; it does not replace a task result or change task status. After a
+   successful record, store the PR URL/result with MCP `update_task`, ensure
+   the QA instructions and project `ai_context` note were saved, then set
    status to `review`. Do not close the task merely because a PR was opened.
 
 For a request that only says “refinar”, perform steps 1–3 and wait for the
