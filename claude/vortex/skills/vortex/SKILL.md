@@ -21,6 +21,12 @@ status without the user's request.
 Treat “executar com Vortex” and `/vortex-executar` as one workflow. Do not ask
 the user to choose a separate refinement command. Announce each stage briefly:
 
+### Model reference for refinement and execution
+When executing the workflow, follow this reference to select the correct model for refinement (stronger model) and execution (economical model):
+- **Codex**: refinement (stronger model) -> **Terra** or **Sol** / execution (weaker model) -> **Lua** or **Terra**
+- **Claude**: refinement (stronger model) -> **Opus** / execution (weaker model) -> **Sonnet**
+- **Gemini & DeepSeek**: refinement (stronger model) -> **Pro** / execution (weaker model) -> **Flash**
+
 1. Confirm the linked project and inspect the task with `get_task_context` or
    `vortex task context ABC-1234 --json`, including attachments, acceptance
    criteria, existing plan, and relevant repository files. Pre-refinement is
@@ -33,14 +39,18 @@ the user to choose a separate refinement command. Announce each stage briefly:
    its current state and ask the user to explicitly choose a new action. A
    `review` task is presumed delivered even if the current checkout lacks its
    branch.
-2. Refine before coding with the strongest capability available: write a short
-   plan, affected areas/files, acceptance criteria, risks, and focused checks.
-   Persist it with MCP `set_task_plan` when available.
+2. Refine before coding with the strongest capability available (the designated
+   refinement models are **Terra** or **Sol** for Codex, **Opus** for Claude, and
+   **Pro** for Gemini and DeepSeek): write a short plan, affected areas/files,
+   acceptance criteria, risks, and focused checks. Persist it with MCP
+   `set_task_plan` when available.
 3. Only if a missing decision makes a safe plan impossible, use
    `set_refinement_question` for one objective question, set `duvida`, explain
    the wait, and stop. Never create a doubt from pre-refinement or task size.
 4. Before editing, set `progresso` with `update_task_status` (or `vortex task
-   update`). Then implement the approved plan economically and atomically.
+   update`). Then implement the approved plan economically and atomically (the
+   designated execution models are **Lua** or **Terra** for Codex, **Sonnet**
+   for Claude, and **Flash** for Gemini and DeepSeek).
 5. Run proportional verification. If blocked, record one execution with
    `vortex task report-execution ABC-1234 --status error --summary "What was
    attempted." --error "Blocking failure"` and keep `progresso`. If successful,

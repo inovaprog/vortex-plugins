@@ -50,6 +50,12 @@ Treat “executar com Vortex”, “execute this Vortex task”, and the legacy
 separate “refine” versus “execute” command. Announce each step briefly so the
 user knows whether work is progressing or waiting on them.
 
+### Model reference for refinement and execution
+When executing the workflow, follow this reference to select the correct model for refinement (stronger model) and execution (economical model):
+- **Codex**: refinement (stronger model) -> **Terra** or **Sol** / execution (weaker model) -> **Lua** or **Terra**
+- **Claude**: refinement (stronger model) -> **Opus** / execution (weaker model) -> **Sonnet**
+- **Gemini & DeepSeek**: refinement (stronger model) -> **Pro** / execution (weaker model) -> **Flash**
+
 1. **Locate and inspect.** Confirm the local project binding, then call
    `get_task_context` (or `vortex task context ABC-1234 --json`). Read the
    task, attachments available in its context, acceptance criteria, existing
@@ -64,10 +70,12 @@ user knows whether work is progressing or waiting on them.
    `review` task is presumed delivered even if the current checkout lacks its
    branch.
 2. **Refine with quality.** Use the strongest model/capability available to
-   reason about the request. Produce a concise implementation plan, affected
-   areas/files, acceptance criteria, risks, and focused checks. Persist the
-   plan with the Vortex MCP `set_task_plan` tool when available. Do not start
-   editing until this pass is complete.
+   reason about the request (the designated refinement models are **Terra** or
+   **Sol** for Codex, **Opus** for Claude, and **Pro** for Gemini and DeepSeek).
+   Produce a concise implementation plan, affected areas/files, acceptance
+   criteria, risks, and focused checks. Persist the plan with the Vortex MCP
+   `set_task_plan` tool when available. Do not start editing until this pass
+   is complete.
 3. **Ask only indispensable questions.** If a missing decision makes a safe
    plan impossible, use `set_refinement_question` with one specific question,
    set the task to `duvida`, explain that execution is waiting, and stop.
@@ -80,8 +88,10 @@ user knows whether work is progressing or waiting on them.
    or verification is still pending.
 5. **Implement economically.** Execute the approved plan in the local
    repository. Use the configured execution-capable model/agent for code
-   changes; reserve the high-quality reasoning pass for planning and review.
-   Keep the change atomic and avoid unrelated refactors.
+   changes (the designated execution models are **Lua** or **Terra** for Codex,
+   **Sonnet** for Claude, and **Flash** for Gemini and DeepSeek); reserve the
+   high-quality reasoning pass for planning and review. Keep the change atomic
+   and avoid unrelated refactors.
 6. **Verify, record, and deliver.** Run proportional, focused checks. Report
    failures honestly; leave the task `progresso` if they block delivery. On
    success, create a branch, commit, push, and open a PR.
