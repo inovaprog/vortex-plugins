@@ -1,0 +1,4 @@
+{
+  "name": "vortex-plugins",
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm"
+}
