@@ -1,6 +1,6 @@
 {
   "name": "vortex",
-  "version": "0.4.0",
+  "version": "0.4.0+codex.20260828205031",
   "description": "Create and manage Vortex tasks from Codex using the authenticated local CLI.",
   "author": {
     "name": "Inovaprog"
