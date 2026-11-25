@@ -71,6 +71,21 @@ Automatic pre-refinement is optional context. It never blocks execution,
 changes status, or creates a question; questions arise only from the real
 refinement step when implementation cannot safely proceed.
 
+## Execute multiple tasks
+
+Ask the agent to **“executar com Vortex ABC-1234 ABC-1235 ABC-1236”**. The
+agent refines each task, puts dependencies first, and opens one PR per task.
+The first PR targets the project's reference branch. Each subsequent PR
+targets the branch of the previous PR.
+
+| Task | PR head | PR base |
+| --- | --- | --- |
+| ABC-1234 | `vortex/abc-1234` | `develop` (project reference) |
+| ABC-1235 | `vortex/abc-1235` | `vortex/abc-1234` |
+| ABC-1236 | `vortex/abc-1236` | `vortex/abc-1235` |
+
+Each task receives its own PR link for review.
+
 ## First use
 
 The plugin checks `vortex doctor --json`. If the CLI is absent, the agent asks

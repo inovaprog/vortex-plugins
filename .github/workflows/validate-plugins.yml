@@ -1,0 +1,53 @@
+name: Validate Vortex plugins
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Plugin packages and guides
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Check patch whitespace
+        run: git diff --check HEAD^ HEAD
+      - name: Validate manifests and stacked delivery guides
+        run: |
+          python3 - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          packages = [
+              ("plugins/vortex", ".codex-plugin/plugin.json"),
+              ("claude/vortex", ".claude-plugin/plugin.json"),
+          ]
+          stack_heading = "### Delivering multiple tasks as stacked PRs\n"
+          stack_guides = []
+          for directory, manifest_name in packages:
+              package = Path(directory)
+              manifest = json.loads((package / manifest_name).read_text())
+              if manifest.get("name") != "vortex" or not re.fullmatch(
+                  r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?", manifest.get("version", "")
+              ):
+                  raise SystemExit(f"Invalid plugin name or version in {directory}")
+
+              mcp_config = package / manifest.get("mcpServers", ".mcp.json")
+              if "vortex" not in json.loads(mcp_config.read_text())["mcpServers"]:
+                  raise SystemExit(f"Missing Vortex MCP configuration in {directory}")
+
+              guide = (package / "skills/vortex/SKILL.md").read_text()
+              if not guide.startswith("---\nname: vortex\n") or stack_heading not in guide:
+                  raise SystemExit(f"Missing Vortex delivery guide in {directory}")
+              stack_guides.append(guide.split(stack_heading, 1)[1])
+
+          if stack_guides[0] != stack_guides[1]:
+              raise SystemExit("Stacked delivery instructions differ between plugins")
+          PY

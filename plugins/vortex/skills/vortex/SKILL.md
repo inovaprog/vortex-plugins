@@ -50,6 +50,12 @@ Treat “executar com Vortex”, “execute this Vortex task”, and the legacy
 separate “refine” versus “execute” command. Announce each step briefly so the
 user knows whether work is progressing or waiting on them.
 
+Resolve the delivery base from the branch configured in the Vortex project's
+GitHub settings (`github_ref`). If the project has no configured reference
+branch, use the Git repository's default remote branch. Confirm the base before
+editing. For multiple tasks, follow the
+[stacked PR workflow](#delivering-multiple-tasks-as-stacked-prs).
+
 ### Model reference for refinement and execution
 When executing the workflow, follow this reference to select the correct model for refinement (stronger model) and execution (economical model):
 - **Codex**: refinement (stronger model) -> **Terra** or **Sol** / execution (weaker model) -> **Lua** or **Terra**
@@ -86,15 +92,16 @@ When executing the workflow, follow this reference to select the correct model f
    to `progresso` using `update_task_status` (or `vortex task update`). Never
    claim progress before this point and never mark a task complete while work
    or verification is still pending.
-5. **Implement economically.** Execute the approved plan in the local
-   repository. Use the configured execution-capable model/agent for code
+5. **Implement economically.** Create a task branch from its chosen base, then
+   execute the approved plan in the local repository. Use the configured execution-capable model/agent for code
    changes (the designated execution models are **Lua** or **Terra** for Codex,
    **Sonnet** for Claude, and **Flash** for Gemini and DeepSeek); reserve the
    high-quality reasoning pass for planning and review. Keep the change atomic
    and avoid unrelated refactors.
 6. **Verify, record, and deliver.** Run proportional, focused checks. Report
    failures honestly; leave the task `progresso` if they block delivery. On
-   success, create a branch, commit, push, and open a PR.
+   success, commit, push, and open a PR against the base used to create the
+   task branch.
 
    Before changing the task to `review`, use `update_task` to persist concise,
    customer-visible **testing_instructions** for the QA handoff. They must say
@@ -127,3 +134,26 @@ edit a task, do only that requested action.
 The legacy `/vortex-refinar` intent is compatible as “refine only”; the legacy
 `/vortex-executar` intent starts the full workflow above. Do not depend on old
 `.mcp.json` or `X-Project-Key` flows.
+
+### Delivering multiple tasks as stacked PRs
+
+1. Refine each task separately. Order prerequisites before their dependents and
+   use the requested order for tasks without dependencies. Include the order
+   and intended base branches in the plan before editing.
+2. Use one branch and one PR per task. Create the first branch from the latest
+   remote tip of the Vortex project's reference branch and target that same
+   reference branch in the first PR. Create each later branch from the head of
+   the previous PR and target that head branch in its PR.
+3. Verify each task on its branch, push it, and open its PR with an explicit
+   base (for example, `gh pr create --base <base-branch> --head <task-branch>`).
+   Check the diff against that base so the PR shows only this task's changes.
+   Link the preceding PR in the description and record this PR's URL, checks,
+   execution result, and review status on its own Vortex task. Open the next
+   PR after this delivery succeeds. If a task is blocked, keep the PRs already
+   delivered available for review and pause the rest of the stack.
+4. When merges are authorized, merge from the bottom of the stack upward.
+   Record the parent branch's tip before merging. After a parent merges,
+   update the next branch and retarget its PR to the parent's base. For a
+   squash or rebase merge, use the parent's recorded tip to replay only
+   the child's commits onto the new base. Restack descendants in order and
+   verify the new diffs and CI before merging again.
